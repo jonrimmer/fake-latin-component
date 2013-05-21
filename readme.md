@@ -1,7 +1,7 @@
 Fake Latin
 =========
 
-Fake Latin is a web component for generating placeholder latin text (e.g. "Lorem ipsum..."). It is uses the [Polymer library](http://polymer-project.org). It can be used to generate small fragments of text, or entire psuedo-structured articles.
+Fake Latin is a web component for generating placeholder latin text (e.g. "Lorem ipsum..."). It uses the [Polymer library](http://polymer-project.org). It can be used to generate small fragments of text or entire psuedo-structured articles.
 
 I originally wrote the component as a simple project to experiment with Polymer, but hopefully it may prove useful to others for rapid prototyping.
 
@@ -16,7 +16,7 @@ To use the component, you will need to include Polymer and import fake-latin.htm
 <link ref="import" href="fake-latin.html">
 ```
 
-To get some generated text, just drop a `<fake-latin>` element into you HTML wherever you want it.
+To get some generated text, just drop a `<fake-latin>` element into your HTML wherever you want it.
 
 ```html
 <span><fake-latin></fake-latin></span>
@@ -34,7 +34,7 @@ If you want more than one sentence, you can use the `repeat` attribute:
 <span><fake-latin repeat="3"></fake-latin></span>
 ```
 
-Which will produce something like
+Which will produce something like:
 
 ```html
 <span>Ardentior ambitae animalibus terrarum. Quem onus pugnabant siccis. Imagine homo sive terra caesa
@@ -89,7 +89,7 @@ The ```repeat``` attribute can be used to produce multiple unordered lists.
 
 ## Ordered Lists
 
-Similarly, you can use the ```type``` attribute with a value of ```ordered list``` or ```ol``` to create an ordred list:
+Similarly, you can use the ```type``` attribute with a value of ```ordered list``` or ```ol``` to create an ordered list:
 
 ```html
 <fake-latin type="ol"></fake-latin>
@@ -108,7 +108,7 @@ Which will produce something like this:
     
 ## List Item Type
 
-If you need to, you can control the content of list items with the ```listItemType``` attribute. A value of ```p``` or ```paragraph``` will produce a ```<p>``` element containing a few sentences of latin, exactly as if you have an ```<fake-latin type="paragraph"></fake-latin>``` element in there.
+If required, you can control the content of list items with the ```listItemType``` attribute. A value of ```p``` or ```paragraph``` will produce a ```<p>``` element containing a few sentences of latin, exactly as if you had a ```<fake-latin type="paragraph"></fake-latin>``` element in there.
 
 Any other value, or if the attribute is not specified, will default to a single sentence.
 
@@ -152,20 +152,20 @@ The default sizes of each type is as follows:
 
 ## Repeat
 
-The ```repeat``` attribute is used to repeat the output of the element some number of times. It accepts the same syntax as the size control elements.
+The ```repeat``` attribute is used to repeat the output of the element some number of times. It accepts the same syntax as the other size control attributes.
 
 E.g. ```repeat="5"```, ```repeat="6,12"``` or ```repeat="n9,3"```
 
 ## Shadowing
 
-By default, the contents of the ```<fake-latin>``` element are created in shadow DOM. Which stops them cluttering up your DOM tree and interacting with scripts. Sometimes though, you might want that, in which case you can set the ```shadowed``` attribute to ```false```. The various ```<p>```, ```<ul>```, etc. elements will then be regular children of the ```<fake-latin>``` element.
+By default, the contents of the ```<fake-latin>``` element are created in shadow DOM, which stops them cluttering up your DOM tree and interacting with scripts. Sometimes though, you might want that, in which case you can set the ```shadowed``` attribute to ```false```. The various ```<p>```, ```<ul>```, etc. elements will then be regular children of the ```<fake-latin>``` element.
 
 ## JavaScript API
 
-The component provides an API to generate latin text via the ```getGenerator``` function. Check the Generator function prototype in the source for more information what this object supports.
+The component provides an imperative way to generate latin text via the ```getGenerator``` function. Check the Generator function prototype in the source for more information about what the object returned by this function supports.
 
 ```JavaScript
-var fl = document.getElementById('#fakeLatin');
+var fl = document.createElement('fake-latin');
 var g = fl.getGenerator();
 var p = g.getParagraph(); // Returns a paragraph node containing generated text.
 var s = g.getSentenceText(); // Returns a string containing generated text.
@@ -175,8 +175,3 @@ Notes:
 
  * If you keep a reference to the generator, it will not update to reflect any changes made to the component's attributes. You should acquire an updated generator by re-calling the ```getGenerator``` function.
  * Updates to the element's content triggered by attribute changes are debounced with a 50ms delay. However, the generator returned by ```getGenerator``` will always reflect the most up-to-date attribute values.
-
-
-
-
-
