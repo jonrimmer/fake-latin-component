@@ -64,5 +64,20 @@
 		<h1 class="test">Article</h1>
 
 		<fake-latin type="article"></fake-latin>
+
+
+		<h1 class="test">API</h1>
+
+		<div id="api"></div>
+
+		<script>
+			 window.addEventListener('WebComponentsReady', function() {
+			 	var fl = document.createElement('fake-latin'),
+			 		api = document.getElementById('api'),
+			 		g = fl.getGenerator();
+
+			 	api.appendChild(g.getParagraph());
+			 });
+		</script>
 	</body>
 </html>
