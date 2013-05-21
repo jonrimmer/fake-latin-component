@@ -1,0 +1,250 @@
+<!-- 
+	Copyright (c) 2013 Jonathan Rimmer. Use of this source code is governed by the Apache License 2.0, details of which are contained in the LICENSE file.
+
+	Latin words and some ideas courtesy of Fredrik Bridell's Lorem Ipsum Generator: http://bridell.com/loremipsum/ (CC-BY)
+ -->
+<element name="fake-latin" attributes="type, paragraphSize, sentenceSize, listSize, headingSize, articleSize, listItemType, repeat">
+
+	<script>
+		function getSizeFn(size) {
+			size = ('' + size).split(',');
+
+			if (size.length == 1) {
+				return function() { return size; };
+			}
+			else {
+				if (size[0].charAt(0) == 'n') {
+					var m = +(size[0].substring(1));
+					return function() { return rndNormal(m, +size[1]); };	
+				}
+				else {
+					return function() { return rndUniform(+size[0], +size[1]); }
+				}
+			}
+		}
+
+		function rndNormal(mean, sd) {
+			// Produces a Gaussian random number, according to http://engr.case.edu/liberatore_vincenzo/software/gauss.html
+			var u1 = 0, u2 = 0;
+
+			while (u1 * u2 == 0.) {
+				u1 = Math.random();
+				u2 = Math.random();
+			}
+
+			return Math.max(1, Math.round(Math.sqrt(-2. * Math.log(u1)) * Math.cos(2 * Math.PI * u2) * sd + mean));
+		}
+
+		function rndUniform(min, max) {
+			return Math.round(Math.random() * (max - min)) + min;
+		}
+
+		function Generator(pSize, sSize, lSize, hSize, aSize, liType) {
+			var size = pSize.split(',');
+
+			this.pSize = getSizeFn(pSize);
+			this.sSize = getSizeFn(sSize);
+			this.lSize = getSizeFn(lSize);
+			this.hSize = getSizeFn(hSize);
+			this.aSize = getSizeFn(aSize);
+
+			switch (liType) {
+				case 'paragraph':
+				case 'p':
+					this.getListItemContent = function() { return this.getParagraph(); };
+					break;
+				default:
+					this.getListItemContent = function() { return document.createTextNode(this.getSentence()); };
+					break;
+			}
+		}
+
+		Generator.prototype = {
+			getParagraph: function() {
+				var sentences = [];
+
+				for (var i = 0, l = this.pSize(); i < l; i++) {
+					sentences.push(this.getSentence());
+				}
+
+				var p = document.createElement('p');
+				p.appendChild(document.createTextNode(sentences.join(' ')));
+				return p;
+			},
+
+			getList: function(ordered) {
+				var list = document.createElement(ordered ? 'ol' : 'ul');
+
+				for (var i = 0, l = this.lSize(); i < l; i++) {
+					var li = document.createElement('li');
+					li.appendChild(this.getListItemContent());
+
+					list.appendChild(li);
+				}
+
+				return list;
+			},
+
+			getWord: function() {
+				return latin[Math.floor(Math.random() * latinLength)];
+			},
+
+			getWords: function(num) {
+				var words = [];
+
+				for (var i = 0; i < num; i++) {
+					words.push(this.getWord());
+				}
+
+				return words.join(' ');
+			},
+
+			getSentence: function() {
+				var size = this.sSize(),
+					result = this.capitalise(this.getWord());
+
+				if (size > 1) {
+					var comma =  Math.random() >= 0.5;
+
+					if (comma) {
+						var place = Math.floor(Math.random() * (size - 1));
+
+						result += (place > 0 ? ' ' : '') + this.getWords(place) + ', ' + this.getWords((size - 1) - place);
+					}
+					else {
+						result += ' ' + this.getWords(size - 1);
+					}						
+				}
+
+				result += '. ';
+
+				return result;
+			},
+
+			getHeadingText: function() {
+				var words = [];
+
+				for (var i = 0, l = this.hSize(); i < l; i++) {
+					words.push(this.capitalise(this.getWord()));
+				}
+
+				return words.join(' ');
+			},
+
+			getHeading: function(tag) {
+				var h = document.createElement(tag);
+
+				h.appendChild(document.createTextNode(this.getHeadingText()));
+
+				return h;
+			},
+
+			getArticle: function() {
+				var article = document.createElement('article');
+
+				article.appendChild(this.getHeading('h1'));
+
+				for (var i = 0, l = this.aSize(); i < l; i++) {
+					if (i > 0) {
+						if (i % 3 == 0) {
+							article.appendChild(this.getHeading('h2'));
+						}
+						if (i % 5 == 0)
+						{
+							article.appendChild(this.getHeading('h3'));
+						}
+					}
+
+					article.appendChild(this.getParagraph());
+				}
+
+				return article;
+			},
+
+			capitalise: function(word) {
+				return word.charAt(0).toUpperCase() + word.substring(1);
+			}
+		};
+
+		function changeHandler() {
+			this.regenerate();
+		}
+
+		Polymer.register(this, {
+			type : 'sentence',
+			paragraphSize: 'n8,3',
+			sentenceSize: 'n12,4',
+			listSize: 'n8,2',
+			headingSize: 'n6,2',
+			articleSize: 'n6,2',
+			listItemType: 'sentence',
+			repeat: 1,
+
+			typeChanged: changeHandler,
+			paragraphSizeChanged: changeHandler,
+			sentenceSizeChanged: changeHandler,
+			listSizeChanged: changeHandler,
+			headingSizeChanged: changeHandler,
+			articleSizeChanged: changeHandler,
+			listItemTypeChanged: changeHandler,
+			repeatChanged: changeHandler,
+
+			ready: function() {
+				this.regenerate();
+			},
+			regenerate: function() {
+				// Throttle the regeneration, so we don't waste effort when multiple attributes change.
+				if (this.timeout == null) {
+					var self = this;
+
+					this.timeout = window.setTimeout(function() {
+						var root = self.webkitCreateShadowRoot();
+						root.applyAuthorStyles = true;
+						var generator = new Generator(self.paragraphSize, self.sentenceSize, self.listSize, self.headingSize, self.articleSize, self.listItemType);
+
+						var repeat = getSizeFn(self.repeat)();
+
+						for (var i = 0; i < repeat; i++) {
+							var myType = self.type.toLowerCase();
+							switch(myType) {
+								case 'p':
+								case 'paragraph':
+									root.appendChild(generator.getParagraph());
+									break;
+								case 'list':
+								case 'unordered list':
+								case 'ul':
+									root.appendChild(generator.getList(false));
+									break;
+								case 'ordered list':
+								case 'ol':
+									root.appendChild(generator.getList(true));
+									break;
+								case 'heading':
+								case 'h1':
+									root.appendChild(generator.getHeading('h1'));
+									break;
+								case 'h2':
+								case 'h3':
+								case 'h4':
+									root.appendChild(generator.getHeading(myType));
+									break;
+								case 'article':
+									root.appendChild(generator.getArticle());
+									break;
+								default:
+									root.appendChild(document.createTextNode(generator.getSentence()));
+							}
+						}
+
+						self.timeout = null;
+					}, 50);
+				}
+			}
+		});
+
+		var latin = ['ab', 'aberant', 'abscidit', 'acervo', 'ad', 'addidit', 'adhuc', 'adsiduis', 'adspirate', 'aequalis', 'aer', 'aera', 'aere', 'aeris', 'aestu', 'aetas', 'aethera', 'aethere', 'agitabilis', 'aliis', 'aliud', 'alta', 'altae', 'alto', 'ambitae', 'amphitrite', 'animal', 'animalia', 'animalibus', 'animus', 'ante', 'aquae', 'arce', 'ardentior', 'astra', 'aurea', 'auroram', 'austro', 'bene', 'boreas', 'bracchia', 'caeca', 'caecoque', 'caeleste', 'caeli', 'caelo', 'caelum', 'caelumque', 'caesa', 'calidis', 'caligine', 'campoque', 'campos', 'capacius', 'carentem', 'carmen', 'cepit', 'certis', 'cesserunt', 'cetera', 'chaos', 'cingebant', 'cinxit', 'circumdare', 'circumfluus', 'circumfuso', 'coegit', 'coeperunt', 'coeptis', 'coercuit', 'cognati', 'colebat', 'concordi', 'congeriem', 'congestaque', 'consistere', 'contraria', 'conversa', 'convexi', 'cornua', 'corpora', 'corpore', 'crescendo', 'cum', 'cuncta', 'cura', 'declivia', 'dedit', 'deducite', 'deerat', 'dei', 'densior', 'deorum', 'derecti', 'descenderat', 'deus', 'dextra', 'di', 'dicere', 'diffundi', 'diremit', 'discordia', 'dispositam', 'dissaepserat', 'dissociata', 'distinxit', 'diu', 'diversa', 'diverso', 'divino', 'dixere', 'dominari', 'duae', 'duas', 'duris', 'effervescere', 'effigiem', 'egens', 'elementaque', 'emicuit', 'ensis', 'eodem', 'erant', 'erat', 'erat', 'erectos', 'est', 'et', 'eurus', 'evolvit', 'exemit', 'extendi', 'fabricator', 'facientes', 'faecis', 'fecit', 'feras', 'fert', 'fidem', 'figuras', 'finxit', 'fixo', 'flamina', 'flamma', 'flexi', 'fluminaque', 'fontes', 'foret', 'forma', 'formaeque', 'formas', 'fossae', 'fratrum', 'freta', 'frigida', 'frigore', 'fronde', 'fuerant', 'fuerat', 'fuit', 'fulgura', 'fulminibus', 'galeae', 'gentes', 'glomeravit', 'grandia', 'gravitate', 'habendum', 'habentem', 'habentia', 'habitabilis', 'habitandae', 'haec', 'hanc', 'his', 'homini', 'hominum', 'homo', 'horrifer', 'humanas', 'hunc', 'iapeto', 'ignea', 'igni', 'ignotas', 'illas', 'ille', 'illi', 'illic', 'illis', 'imagine', 'in', 'inclusum', 'indigestaque', 'induit', 'iners', 'inmensa', 'inminet', 'innabilis', 'inposuit', 'instabilis', 'inter', 'invasit', 'ipsa', 'ita', 'iudicis', 'iuga', 'iunctarum', 'iussit', 'lacusque', 'lanient', 'lapidosos', 'lege', 'legebantur', 'levitate', 'levius', 'liberioris', 'librata', 'ligavit', 'limitibus', 'liquidas', 'liquidum', 'litem', 'litora', 'locavit', 'locis', 'locoque', 'locum', 'longo', 'lucis', 'lumina', 'madescit', 'magni', 'manebat', 'mare', 'margine', 'matutinis', 'mea', 'media', 'meis', 'melior', 'melioris', 'membra', 'mentes', 'mentisque', 'metusque', 'militis', 'minantia', 'mixta', 'mixtam', 'moderantum', 'modo', 'moles', 'mollia', 'montes', 'montibus', 'mortales', 'motura', 'mundi', 'mundo', 'mundum', 'mutastis', 'mutatas', 'nabataeaque', 'nam', 'natura', 'naturae', 'natus', 'ne', 'nebulas', 'nec', 'neu', 'nisi', 'nitidis', 'nix', 'non', 'nondum', 'norant', 'nova', 'nubes', 'nubibus', 'nullaque', 'nulli', 'nullo', 'nullus', 'numero', 'nunc', 'nuper', 'obliquis', 'obsistitur', 'obstabatque', 'occiduo', 'omni', 'omnia', 'onerosior', 'onus', 'opifex', 'oppida', 'ora', 'orba', 'orbe', 'orbem', 'orbis', 'origine', 'origo', 'os', 'otia', 'pace', 'parte', 'partim', 'passim', 'pendebat', 'peragebant', 'peregrinum', 'permisit', 'perpetuum', 'persidaque', 'perveniunt', 'phoebe', 'pinus', 'piscibus', 'plagae', 'pluvialibus', 'pluviaque', 'poena', 'pondere', 'ponderibus', 'pondus', 'pontus', 'porrexerat', 'possedit', 'posset', 'postquam', 'praebebat', 'praecipites', 'praeter', 'premuntur', 'pressa', 'prima', 'primaque', 'principio', 'pro', 'pronaque', 'proxima', 'proximus', 'pugnabant', 'pulsant', 'quae', 'quam', 'quanto', 'quarum', 'quem', 'qui', 'quia', 'quicquam', 'quin', 'quinta', 'quisque', 'quisquis', 'quod', 'quoque', 'radiis', 'rapidisque', 'recens', 'recepta', 'recessit', 'rectumque', 'regat', 'regio', 'regna', 'reparabat', 'rerum', 'retinebat', 'ripis', 'rudis', 'sanctius', 'sata', 'satus', 'scythiam', 'secant', 'secrevit', 'sectamque', 'secuit', 'securae', 'sed', 'seductaque', 'semina', 'semine', 'septemque', 'sibi', 'sic', 'siccis', 'sidera', 'silvas', 'sine', 'sinistra', 'sive', 'sole', 'solidumque', 'solum', 'sorbentur', 'speciem', 'spectent', 'spisso', 'sponte', 'stagna', 'sua', 'subdita', 'sublime', 'subsidere', 'sui', 'suis', 'summaque', 'sunt', 'super', 'supplex', 'surgere', 'tanta', 'tanto', 'tegi', 'tegit', 'tellure', 'tellus', 'temperiemque', 'tempora', 'tenent', 'tepescunt', 'terra', 'terrae', 'terram', 'terrarum', 'terras', 'terrenae', 'terris', 'timebat', 'titan', 'tollere', 'tonitrua', 'totidem', 'totidemque', 'toto', 'tractu', 'traxit', 'triones', 'tuba', 'tum', 'tumescere', 'turba', 'tuti', 'ubi', 'ulla', 'ultima', 'umentia', 'umor', 'unda', 'undae', 'undas', 'undis', 'uno', 'unus', 'usu', 'ut', 'utque', 'utramque', 'valles', 'ventis', 'ventos', 'verba', 'vesper', 'videre', 'vindice', 'vis', 'viseret', 'vix', 'volucres', 'vos', 'vultus', 'zephyro', 'zonae'];
+
+		var latinLength = latin.length;
+	</script>
+</element>

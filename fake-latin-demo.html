@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+	<head>
+    	<meta charset="utf-8">
+		<script src="polymer/polymer.js"></script>
+		<link rel="import" href="fake-latin.html" />
+		<style>
+			body {
+				font-family: sans-serif;
+			}
+
+			h1.test {
+				background-color: #BFFF7F;
+				padding: 0.5em;
+			}
+		</style>
+	</head>
+	<body>
+		<h1 class="test">Single Sentence</h1>
+		
+		<fake-latin ></fake-latin>
+
+
+		<h1 class="test">Three Sentences</h1>
+
+		<fake-latin repeat="3"></fake-latin>
+
+		
+		<h1 class="test">Single Paragraph</h1>
+
+		<fake-latin type="p"></fake-latin>
+
+
+		<h1 class="test">Three Paragraphs</h1>
+
+		<fake-latin type="p" repeat="3"></fake-latin>
+
+
+		<h1 class="test">Unordered List</h1>
+
+		<fake-latin type="ul"></fake-latin>
+
+
+		<h1 class="test">Ordered List</h1>
+
+		<fake-latin type="ol"></fake-latin>
+
+
+		<h1 class="test">Paragraph List</h1>
+
+		<fake-latin type="list" listItemType="p"></fake-latin>
+
+
+		<h1 class="test">Heading</h1>
+
+		<fake-latin type="heading"></fake-latin>
+
+
+		<h1 class="test">Article</h1>
+
+		<fake-latin type="article"></fake-latin>
+	</body>
+</html>
