@@ -108,7 +108,7 @@ Which will produce something like this:
     
 ## List Item Type
 
-If you need to, you can control the content of list items with the ```list-item-type``` attribute. A value of ```p``` or ```paragraph``` will produce a ```<p>``` element containing a few sentences of latin, exactly as if you have an ```<fake-latin type="paragraph"></fake-latin>``` element in there.
+If you need to, you can control the content of list items with the ```listItemType``` attribute. A value of ```p``` or ```paragraph``` will produce a ```<p>``` element containing a few sentences of latin, exactly as if you have an ```<fake-latin type="paragraph"></fake-latin>``` element in there.
 
 Any other value, or if the attribute is not specified, will default to a single sentence.
 
@@ -122,23 +122,23 @@ You can use the ```type``` attribute with a value of ```article``` to generate a
 
 ## Size Control
 
-If necessary, the size of the generated content can be contolled via the ```sentence-size```, ```paragraph-size```, ```list-size```, ```heading-size``` and ```article-size``` attributes. These attributes accept values in three forms:
+If necessary, the size of the generated content can be contolled via the ```sentenceSize```, ```paragraphSize```, ```listSize```, ```headingSize``` and ```articleSize``` attributes. These attributes accept values in three forms:
 
 ### &lt;size&gt;
 
-E.g. ```sentence-size="10"```
+E.g. ```sentenceSize="10"```
 
 This will specify a fixed size value.
 
 ### &lt;min&gt;,&lt;max&gt;
 
-E.g. ```paragraph-size="5,15"```
+E.g. ```paragraphSize="5,15"```
 
 This will produce a random size that is uniformly distributed between the minimum and maximum values.
 
 ### n&lt;mean&gt;,&lt;std-dev&gt;
 
-E.g. ```list-size="n8,2"```
+E.g. ```listSize="n8,2"```
 
 This will produce a random size this is approximately normally distributed with the supplied mean and standard deviation.
 
@@ -156,7 +156,25 @@ The ```repeat``` attribute is used to repeat the output of the element some numb
 
 E.g. ```repeat="5"```, ```repeat="6,12"``` or ```repeat="n9,3"```
 
+## Shadowing
 
+By default, the contents of the ```<fake-latin>``` element are created in shadow DOM. Which stops them cluttering up your DOM tree and interacting with scripts. Sometimes though, you might want that, in which case you can set the ```shadowed``` attribute to ```false```. The various ```<p>```, ```<ul>```, etc. elements will then be regular children of the ```<fake-latin>``` element.
+
+## JavaScript API
+
+The component provides an API to generate latin text via the ```getGenerator``` function. Check the Generator function prototype in the source for more information what this object supports.
+
+```JavaScript
+var fl = document.getElementById('#fakeLatin');
+var g = fl.getGenerator();
+var p = g.getParagraph(); // Returns a paragraph node containing generated text.
+var s = g.getSentenceText(); // Returns a string containing generated text.
+```
+
+Notes:
+
+ * If you keep a reference to the generator, it will not update to reflect any changes made to the component's attributes. You should acquire an updated generator by re-calling the ```getGenerator``` function.
+ * Updates to the element's content triggered by attribute changes are debounced with a 50ms delay. However, the generator returned by ```getGenerator``` will always reflect the most up-to-date attribute values.
 
 
 
