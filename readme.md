@@ -158,7 +158,11 @@ E.g. ```repeat="5"```, ```repeat="6,12"``` or ```repeat="n9,3"```
 
 ## Shadowing
 
-By default, the contents of the ```<fake-latin>``` element are created in shadow DOM, which stops them cluttering up your DOM tree and interacting with scripts. Sometimes though, you might want that, in which case you can set the ```shadowed``` attribute to ```false```. The various ```<p>```, ```<ul>```, etc. elements will then be regular children of the ```<fake-latin>``` element.
+By default, the contents of the ```<fake-latin>``` element are created in shadow DOM, which stops them cluttering up your DOM tree and interacting with scripts. Sometimes though, you might want that, in which case you can set the ```unshadowed``` boolean attribute on your element. The various ```<p>```, ```<ul>```, etc. elements will then be regular children of the ```<fake-latin>``` element.
+
+```html
+<fake-latin type="paragraph" unshadowed></fake-latin>
+```
 
 ## JavaScript API
 

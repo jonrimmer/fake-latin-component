@@ -3,7 +3,7 @@
 
 	Latin words and some ideas courtesy of Fredrik Bridell's Lorem Ipsum Generator: http://bridell.com/loremipsum/ (CC-BY)
  -->
-<element name="fake-latin" attributes="type, paragraphSize, sentenceSize, listSize, headingSize, articleSize, listItemType, repeat, shadowed">
+<element name="fake-latin" attributes="type, paragraphSize, sentenceSize, listSize, headingSize, articleSize, listItemType, repeat, unshadowed">
 
 	<script>
 		function getSizeFn(size) {
@@ -182,7 +182,7 @@
 			headingSize: 'n6,2',
 			articleSize: 'n6,2',
 			listItemType: 'sentence',
-			shadowed: true,
+			unshadowed: false,
 			repeat: 1,
 
 			typeChanged: changeHandler,
@@ -208,7 +208,7 @@
 				this.timeout = window.setTimeout(function() {
 					self.timeout = null;
 
-					if (self.shadowed) {
+					if (!self.unshadowed) {
 						var root = self.webkitCreateShadowRoot();
 						root.applyAuthorStyles = true;
 					}
