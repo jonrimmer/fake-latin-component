@@ -4,13 +4,20 @@ Fake Latin is a web component for generating placeholder latin text (e.g. "Lorem
 
 I originally wrote the component as a simple project to experiment with Polymer, but hopefully it may prove useful to others for rapid prototyping.
 
+## Installation
+
+Install using Bower:
+
+```sh
+bower install --save jonrimmer/fake-latin-component
+```
+
 ## Usage
 
-To use the component, you will need to include Polymer's loader, and import fake-latin.html.
+To use the component, import fake-latin.html.
 
 ```html
-<script src="https://polygit.org/components/webcomponentsjs/webcomponents-loader.js"></script>
-<link ref="import" href="fake-latin.html">
+<link ref="import" href="bower_components/fake-latin.html">
 ```
 
 To get some generated text, just drop a `<fake-latin>` element into your HTML wherever you want it.
