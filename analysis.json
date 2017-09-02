@@ -1,0 +1,705 @@
+{
+  "schema_version": "1.0.0",
+  "elements": [
+    {
+      "description": "# Fake Latin\n`<fake-latin>` generates random placeholder text of different shapes and sizes.\n## Usage\nTo get some generated text, drop a `<fake-latin>` element into your HTML wherever you want it.\n\n```html\n<fake-latin></fake-latin>\n```\n### Size Microsyntax\n\nSome properties, such as `paragraphSize` and `listSize` can be used to control the size of the \nrandomly generated content. These properties expect input in the following form: `[n]{min}[,max]`.\n\nEach generated item will have a size between `min` and `max` (inclusive). E.g. Given the following:\n\n```html\n<fake-latin type=\"p\" paragraph-size=\"5,10\"></fake-latin>\n```\n\nThe generated paragraph would have between 5 and 10 words. If `max` is omitted, the generated size will be exactly `min`.\n\nBy default, the generated sizes are uniformly distributed between `min` and `max`. If the range is preceded by `n`, then\nthe generated sizes will be normally distributed between `min` and `max`",
+      "summary": "",
+      "path": "fake-latin.html",
+      "properties": [
+        {
+          "name": "type",
+          "type": "string",
+          "description": "The type of text or HTML content to generate.\n\n - sentence\n - p / paragraph\n - list / unordered list / ul\n - ordered list / ol\n - heading / h1\n - h2\n - h3\n - h4\n - article",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 328,
+              "column": 8
+            },
+            "end": {
+              "line": 331,
+              "column": 9
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          },
+          "defaultValue": "\"sentence\""
+        },
+        {
+          "name": "paragraphSize",
+          "type": "string",
+          "description": "The size of paragraph to generate, in sentences.",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 335,
+              "column": 8
+            },
+            "end": {
+              "line": 338,
+              "column": 9
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          },
+          "defaultValue": "\"n8,3\""
+        },
+        {
+          "name": "sentenceSize",
+          "type": "string",
+          "description": "The size of sentence to generate, in words.",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 342,
+              "column": 8
+            },
+            "end": {
+              "line": 345,
+              "column": 9
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          },
+          "defaultValue": "\"n12,4\""
+        },
+        {
+          "name": "listSize",
+          "type": "string",
+          "description": "The size of list to generate, in items.\nThe size of each item can be controlled by the appropriate attribute, depending on the `listItemType`.",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 350,
+              "column": 8
+            },
+            "end": {
+              "line": 353,
+              "column": 9
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          },
+          "defaultValue": "\"n8,2\""
+        },
+        {
+          "name": "headingSize",
+          "type": "string",
+          "description": "The size of heading to generate, in words.",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 357,
+              "column": 8
+            },
+            "end": {
+              "line": 360,
+              "column": 9
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          },
+          "defaultValue": "\"n6,2\""
+        },
+        {
+          "name": "articleSize",
+          "type": "string",
+          "description": "The size of article to generate, in heading and paragraph sections.",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 364,
+              "column": 8
+            },
+            "end": {
+              "line": 367,
+              "column": 9
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          },
+          "defaultValue": "\"n6,2\""
+        },
+        {
+          "name": "listItemType",
+          "type": "string",
+          "description": "The type of item to create within a list.\n\n - sentence\n - p / paragraph",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 374,
+              "column": 8
+            },
+            "end": {
+              "line": 377,
+              "column": 9
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          },
+          "defaultValue": "\"sentence\""
+        },
+        {
+          "name": "unshadowed",
+          "type": "boolean",
+          "description": "Whether the generated content is placed within a shadow root, or directly within the DOM of the document.",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 381,
+              "column": 8
+            },
+            "end": {
+              "line": 384,
+              "column": 9
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          },
+          "defaultValue": "false"
+        },
+        {
+          "name": "repeat",
+          "type": "string",
+          "description": "The number of copies of the root type to generate.",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 388,
+              "column": 8
+            },
+            "end": {
+              "line": 391,
+              "column": 9
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          },
+          "defaultValue": "\"1\""
+        }
+      ],
+      "methods": [
+        {
+          "name": "connectedCallback",
+          "description": "",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 395,
+              "column": 4
+            },
+            "end": {
+              "line": 408,
+              "column": 5
+            }
+          },
+          "metadata": {},
+          "params": []
+        },
+        {
+          "name": "attributeChangedCallback",
+          "description": "",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 410,
+              "column": 4
+            },
+            "end": {
+              "line": 425,
+              "column": 5
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "name"
+            },
+            {
+              "name": "old"
+            },
+            {
+              "name": "value"
+            }
+          ]
+        },
+        {
+          "name": "regenerate",
+          "description": "Regenerates the content of the component.",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 430,
+              "column": 4
+            },
+            "end": {
+              "line": 468,
+              "column": 5
+            }
+          },
+          "metadata": {},
+          "params": []
+        },
+        {
+          "name": "getGenerator",
+          "description": "Creates and returns a {Generator} based on the component's configuration. This is not the actual\ngenerator instance used by the component, and changes to the component's attributes and properties\nmade after a call to `getGenerator()` will not be reflected in the results of generator returned.",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 477,
+              "column": 4
+            },
+            "end": {
+              "line": 486,
+              "column": 5
+            }
+          },
+          "metadata": {},
+          "params": [],
+          "return": {
+            "type": "Generator",
+            "desc": "The generator instance."
+          }
+        }
+      ],
+      "staticMethods": [],
+      "demos": [
+        {
+          "url": "demo.html",
+          "description": ""
+        }
+      ],
+      "metadata": {},
+      "sourceRange": {
+        "start": {
+          "line": 307,
+          "column": 2
+        },
+        "end": {
+          "line": 487,
+          "column": 3
+        }
+      },
+      "privacy": "public",
+      "superclass": "HTMLElement",
+      "name": "FakeLatinComponent",
+      "attributes": [
+        {
+          "name": "type",
+          "description": "The type of text or HTML content to generate.\n\n - sentence\n - p / paragraph\n - list / unordered list / ul\n - ordered list / ol\n - heading / h1\n - h2\n - h3\n - h4\n - article",
+          "sourceRange": {
+            "start": {
+              "line": 328,
+              "column": 8
+            },
+            "end": {
+              "line": 331,
+              "column": 9
+            }
+          },
+          "metadata": {},
+          "type": "string"
+        },
+        {
+          "name": "paragraph-size",
+          "description": "The size of paragraph to generate, in sentences.",
+          "sourceRange": {
+            "start": {
+              "line": 335,
+              "column": 8
+            },
+            "end": {
+              "line": 338,
+              "column": 9
+            }
+          },
+          "metadata": {},
+          "type": "string"
+        },
+        {
+          "name": "sentence-size",
+          "description": "The size of sentence to generate, in words.",
+          "sourceRange": {
+            "start": {
+              "line": 342,
+              "column": 8
+            },
+            "end": {
+              "line": 345,
+              "column": 9
+            }
+          },
+          "metadata": {},
+          "type": "string"
+        },
+        {
+          "name": "list-size",
+          "description": "The size of list to generate, in items.\nThe size of each item can be controlled by the appropriate attribute, depending on the `listItemType`.",
+          "sourceRange": {
+            "start": {
+              "line": 350,
+              "column": 8
+            },
+            "end": {
+              "line": 353,
+              "column": 9
+            }
+          },
+          "metadata": {},
+          "type": "string"
+        },
+        {
+          "name": "heading-size",
+          "description": "The size of heading to generate, in words.",
+          "sourceRange": {
+            "start": {
+              "line": 357,
+              "column": 8
+            },
+            "end": {
+              "line": 360,
+              "column": 9
+            }
+          },
+          "metadata": {},
+          "type": "string"
+        },
+        {
+          "name": "article-size",
+          "description": "The size of article to generate, in heading and paragraph sections.",
+          "sourceRange": {
+            "start": {
+              "line": 364,
+              "column": 8
+            },
+            "end": {
+              "line": 367,
+              "column": 9
+            }
+          },
+          "metadata": {},
+          "type": "string"
+        },
+        {
+          "name": "list-item-type",
+          "description": "The type of item to create within a list.\n\n - sentence\n - p / paragraph",
+          "sourceRange": {
+            "start": {
+              "line": 374,
+              "column": 8
+            },
+            "end": {
+              "line": 377,
+              "column": 9
+            }
+          },
+          "metadata": {},
+          "type": "string"
+        },
+        {
+          "name": "unshadowed",
+          "description": "Whether the generated content is placed within a shadow root, or directly within the DOM of the document.",
+          "sourceRange": {
+            "start": {
+              "line": 381,
+              "column": 8
+            },
+            "end": {
+              "line": 384,
+              "column": 9
+            }
+          },
+          "metadata": {},
+          "type": "boolean"
+        },
+        {
+          "name": "repeat",
+          "description": "The number of copies of the root type to generate.",
+          "sourceRange": {
+            "start": {
+              "line": 388,
+              "column": 8
+            },
+            "end": {
+              "line": 391,
+              "column": 9
+            }
+          },
+          "metadata": {},
+          "type": "string"
+        }
+      ],
+      "events": [],
+      "styling": {
+        "cssVariables": [],
+        "selectors": []
+      },
+      "slots": [],
+      "tagname": "fake-latin"
+    }
+  ],
+  "classes": [
+    {
+      "description": "Latin HTML generator that is used by `<fake-latin>` to generate its content.",
+      "summary": "",
+      "path": "fake-latin.html",
+      "properties": [],
+      "methods": [
+        {
+          "name": "getParagraph",
+          "description": "Creates a `<p>` element containing random text.",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 127,
+              "column": 4
+            },
+            "end": {
+              "line": 137,
+              "column": 5
+            }
+          },
+          "metadata": {},
+          "params": [],
+          "return": {
+            "type": "HTMLParagraphElement",
+            "desc": "The generate paragraph element."
+          }
+        },
+        {
+          "name": "getList",
+          "description": "Creates a `<ul>` or `<ol>` element containing random items.",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 144,
+              "column": 4
+            },
+            "end": {
+              "line": 155,
+              "column": 5
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "ordered",
+              "type": "boolean",
+              "description": "Whether the list should be ordered or not."
+            }
+          ],
+          "return": {
+            "type": "(HTMLUListElement|HTMLOListElement)",
+            "desc": "The generated list element."
+          }
+        },
+        {
+          "name": "getWord",
+          "description": "Gets a single, random, lowercase word from the internal Latin dictionary.",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 161,
+              "column": 4
+            },
+            "end": {
+              "line": 163,
+              "column": 5
+            }
+          },
+          "metadata": {},
+          "params": [],
+          "return": {
+            "type": "string",
+            "desc": "The random word."
+          }
+        },
+        {
+          "name": "getWords",
+          "description": "Gets an exact number of words from the interal Latin dictionary, joined by spaces.",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 170,
+              "column": 4
+            },
+            "end": {
+              "line": 178,
+              "column": 5
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "num",
+              "type": "number",
+              "description": "The number of random words to get."
+            }
+          ],
+          "return": {
+            "type": "string",
+            "desc": "The random words."
+          }
+        },
+        {
+          "name": "getSentenceText",
+          "description": "Gets a random sentence of text.",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 184,
+              "column": 4
+            },
+            "end": {
+              "line": 204,
+              "column": 5
+            }
+          },
+          "metadata": {},
+          "params": [],
+          "return": {
+            "type": "string",
+            "desc": "The random sentence."
+          }
+        },
+        {
+          "name": "getSentence",
+          "description": "Creates a text node containing a random sentence.",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 210,
+              "column": 4
+            },
+            "end": {
+              "line": 212,
+              "column": 5
+            }
+          },
+          "metadata": {},
+          "params": [],
+          "return": {
+            "type": "Text",
+            "desc": "The generated text node."
+          }
+        },
+        {
+          "name": "getHeadingText",
+          "description": "Creates a random, heading-cased group of words.",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 218,
+              "column": 4
+            },
+            "end": {
+              "line": 226,
+              "column": 5
+            }
+          },
+          "metadata": {},
+          "params": [],
+          "return": {
+            "desc": "The heading text."
+          }
+        },
+        {
+          "name": "getHeading",
+          "description": "Creates an `<h1>`, `<h2>`, etc. node, containing a random heading.",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 233,
+              "column": 4
+            },
+            "end": {
+              "line": 239,
+              "column": 5
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "tag",
+              "description": "The type of heading node to generate: \"h1\", \"h2\", etc."
+            }
+          ],
+          "return": {
+            "type": "HTMLElement",
+            "desc": "The generated heading element."
+          }
+        },
+        {
+          "name": "getArticle",
+          "description": "Creates an `<article>` element containing structured content.",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 245,
+              "column": 4
+            },
+            "end": {
+              "line": 265,
+              "column": 5
+            }
+          },
+          "metadata": {},
+          "params": [],
+          "return": {
+            "type": "HTMLElement",
+            "desc": "The generated article element."
+          }
+        },
+        {
+          "name": "capitalise",
+          "description": "Capitalises the first letter of a word.",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 272,
+              "column": 4
+            },
+            "end": {
+              "line": 274,
+              "column": 5
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "word"
+            }
+          ],
+          "return": {
+            "type": "string",
+            "desc": "The capitalised word."
+          }
+        }
+      ],
+      "staticMethods": [],
+      "demos": [],
+      "metadata": {},
+      "sourceRange": {
+        "start": {
+          "line": 93,
+          "column": 2
+        },
+        "end": {
+          "line": 275,
+          "column": 3
+        }
+      },
+      "privacy": "public",
+      "name": "Generator"
+    }
+  ]
+}

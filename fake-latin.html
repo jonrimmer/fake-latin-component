@@ -1,274 +1,491 @@
 <!-- 
-	Copyright (c) 2013 Jonathan Rimmer. Use of this source code is governed by the Apache License 2.0, details of which are contained in the LICENSE file.
+	Copyright (c) 2013 Jonathan Rimmer. Use of this source code is governed by the MIT license, details of which are contained in the LICENSE file.
 
 	Latin words and some ideas courtesy of Fredrik Bridell's Lorem Ipsum Generator: http://bridell.com/loremipsum/ (CC-BY)
  -->
-<polymer-element name="fake-latin" attributes="type, paragraphSize, sentenceSize, listSize, headingSize, articleSize, listItemType, repeat, unshadowed">
+<link rel="import" href="https://polygit.org/components/polymer/polymer-element.html">
 
-	<script>
-		function getSizeFn(size) {
-			size = ('' + size).split(',');
+<script>
+  var latin = [
+    'ab', 'aberant', 'abscidit', 'acervo', 'ad', 'addidit', 'adhuc', 'adsiduis', 'adspirate', 'aequalis', 'aer', 'aera',
+    'aere', 'aeris', 'aestu', 'aetas', 'aethera', 'aethere', 'agitabilis', 'aliis', 'aliud', 'alta', 'altae', 'alto',
+    'ambitae', 'amphitrite', 'animal', 'animalia', 'animalibus', 'animus', 'ante', 'aquae', 'arce', 'ardentior', 'astra',
+    'aurea', 'auroram', 'austro', 'bene', 'boreas', 'bracchia', 'caeca', 'caecoque', 'caeleste', 'caeli', 'caelo', 
+    'caelum', 'caelumque', 'caesa', 'calidis', 'caligine', 'campoque', 'campos', 'capacius', 'carentem', 'carmen', 'cepit',
+    'certis', 'cesserunt', 'cetera', 'chaos', 'cingebant', 'cinxit', 'circumdare', 'circumfluus', 'circumfuso', 'coegit',
+    'coeperunt', 'coeptis', 'coercuit', 'cognati', 'colebat', 'concordi', 'congeriem', 'congestaque', 'consistere',
+    'contraria', 'conversa', 'convexi', 'cornua', 'corpora', 'corpore', 'crescendo', 'cum', 'cuncta', 'cura', 'declivia',
+    'dedit', 'deducite', 'deerat', 'dei', 'densior', 'deorum', 'derecti', 'descenderat', 'deus', 'dextra', 'di', 'dicere',
+    'diffundi', 'diremit', 'discordia', 'dispositam', 'dissaepserat', 'dissociata', 'distinxit', 'diu', 'diversa',
+    'diverso', 'divino', 'dixere', 'dominari', 'duae', 'duas', 'duris', 'effervescere', 'effigiem', 'egens', 'elementaque',
+    'emicuit', 'ensis', 'eodem', 'erant', 'erat', 'erat', 'erectos', 'est', 'et', 'eurus', 'evolvit', 'exemit', 'extendi',
+    'fabricator', 'facientes', 'faecis', 'fecit', 'feras', 'fert', 'fidem', 'figuras', 'finxit', 'fixo', 'flamina',
+    'flamma', 'flexi', 'fluminaque', 'fontes', 'foret', 'forma', 'formaeque', 'formas', 'fossae', 'fratrum', 'freta',
+    'frigida', 'frigore', 'fronde', 'fuerant', 'fuerat', 'fuit', 'fulgura', 'fulminibus', 'galeae', 'gentes',
+    'glomeravit', 'grandia', 'gravitate', 'habendum', 'habentem', 'habentia', 'habitabilis', 'habitandae', 'haec', 'hanc',
+    'his', 'homini', 'hominum', 'homo', 'horrifer', 'humanas', 'hunc', 'iapeto', 'ignea', 'igni', 'ignotas', 'illas',
+    'ille', 'illi', 'illic', 'illis', 'imagine', 'in', 'inclusum', 'indigestaque', 'induit', 'iners', 'inmensa',
+    'inminet', 'innabilis', 'inposuit', 'instabilis', 'inter', 'invasit', 'ipsa', 'ita', 'iudicis', 'iuga', 'iunctarum',
+    'iussit', 'lacusque', 'lanient', 'lapidosos', 'lege', 'legebantur', 'levitate', 'levius', 'liberioris', 'librata',
+    'ligavit', 'limitibus', 'liquidas', 'liquidum', 'litem', 'litora', 'locavit', 'locis', 'locoque', 'locum', 'longo',
+    'lucis', 'lumina', 'madescit', 'magni', 'manebat', 'mare', 'margine', 'matutinis', 'mea', 'media', 'meis', 'melior',
+    'melioris', 'membra', 'mentes', 'mentisque', 'metusque', 'militis', 'minantia', 'mixta', 'mixtam', 'moderantum',
+    'modo', 'moles', 'mollia', 'montes', 'montibus', 'mortales', 'motura', 'mundi', 'mundo', 'mundum', 'mutastis',
+    'mutatas', 'nabataeaque', 'nam', 'natura', 'naturae', 'natus', 'ne', 'nebulas', 'nec', 'neu', 'nisi', 'nitidis',
+    'nix', 'non', 'nondum', 'norant', 'nova', 'nubes', 'nubibus', 'nullaque', 'nulli', 'nullo', 'nullus', 'numero',
+    'nunc', 'nuper', 'obliquis', 'obsistitur', 'obstabatque', 'occiduo', 'omni', 'omnia', 'onerosior', 'onus', 'opifex',
+    'oppida', 'ora', 'orba', 'orbe', 'orbem', 'orbis', 'origine', 'origo', 'os', 'otia', 'pace', 'parte', 'partim',
+    'passim', 'pendebat', 'peragebant', 'peregrinum', 'permisit', 'perpetuum', 'persidaque', 'perveniunt', 'phoebe',
+    'pinus', 'piscibus', 'plagae', 'pluvialibus', 'pluviaque', 'poena', 'pondere', 'ponderibus', 'pondus', 'pontus',
+    'porrexerat', 'possedit', 'posset', 'postquam', 'praebebat', 'praecipites', 'praeter', 'premuntur', 'pressa',
+    'prima', 'primaque', 'principio', 'pro', 'pronaque', 'proxima', 'proximus', 'pugnabant', 'pulsant', 'quae', 'quam',
+    'quanto', 'quarum', 'quem', 'qui', 'quia', 'quicquam', 'quin', 'quinta', 'quisque', 'quisquis', 'quod', 'quoque',
+    'radiis', 'rapidisque', 'recens', 'recepta', 'recessit', 'rectumque', 'regat', 'regio', 'regna', 'reparabat', 'rerum',
+    'retinebat', 'ripis', 'rudis', 'sanctius', 'sata', 'satus', 'scythiam', 'secant', 'secrevit', 'sectamque', 'secuit',
+    'securae', 'sed', 'seductaque', 'semina', 'semine', 'septemque', 'sibi', 'sic', 'siccis', 'sidera', 'silvas', 'sine',
+    'sinistra', 'sive', 'sole', 'solidumque', 'solum', 'sorbentur', 'speciem', 'spectent', 'spisso', 'sponte', 'stagna',
+    'sua', 'subdita', 'sublime', 'subsidere', 'sui', 'suis', 'summaque', 'sunt', 'super', 'supplex', 'surgere', 'tanta',
+    'tanto', 'tegi', 'tegit', 'tellure', 'tellus', 'temperiemque', 'tempora', 'tenent', 'tepescunt', 'terra', 'terrae',
+    'terram', 'terrarum', 'terras', 'terrenae', 'terris', 'timebat', 'titan', 'tollere', 'tonitrua', 'totidem',
+    'totidemque', 'toto', 'tractu', 'traxit', 'triones', 'tuba', 'tum', 'tumescere', 'turba', 'tuti', 'ubi', 'ulla',
+    'ultima', 'umentia', 'umor', 'unda', 'undae', 'undas', 'undis', 'uno', 'unus', 'usu', 'ut', 'utque', 'utramque',
+    'valles', 'ventis', 'ventos', 'verba', 'vesper', 'videre', 'vindice', 'vis', 'viseret', 'vix', 'volucres', 'vos',
+    'vultus', 'zephyro', 'zonae'
+  ];
 
-			if (size.length == 1) {
-				return function() { return size; };
-			}
-			else {
-				if (size[0].charAt(0) == 'n') {
-					var m = +(size[0].substring(1));
-					return function() { return rndNormal(m, +size[1]); };	
-				}
-				else {
-					return function() { return rndUniform(+size[0], +size[1]); }
-				}
-			}
-		}
+  var latinLength = latin.length;
 
-		function rndNormal(mean, sd) {
-			// Produces a Gaussian random number, according to http://engr.case.edu/liberatore_vincenzo/software/gauss.html
-			var u1 = 0, u2 = 0;
+  function getSizeFn(size) {
+    size = ('' + size).split(',');
 
-			while (u1 * u2 == 0.) {
-				u1 = Math.random();
-				u2 = Math.random();
-			}
+    if (size.length == 1) {
+      return function() { return size; };
+    }
+    else {
+      if (size[0].charAt(0) == 'n') {
+        var m = +(size[0].substring(1));
+        return function() { return rndNormal(m, +size[1]); };	
+      }
+      else {
+        return function() { return rndUniform(+size[0], +size[1]); }
+      }
+    }
+  }
 
-			return Math.max(1, Math.round(Math.sqrt(-2. * Math.log(u1)) * Math.cos(2 * Math.PI * u2) * sd + mean));
-		}
+  function rndNormal(mean, sd) {
+    // Produces a Gaussian random number, according to http://engr.case.edu/liberatore_vincenzo/software/gauss.html
+    var u1 = 0, u2 = 0;
 
-		function rndUniform(min, max) {
-			return Math.round(Math.random() * (max - min)) + min;
-		}
+    while (u1 * u2 == 0.) {
+      u1 = Math.random();
+      u2 = Math.random();
+    }
 
-		function Generator(pSize, sSize, lSize, hSize, aSize, liType) {
-			var size = pSize.split(',');
+    return Math.max(1, Math.round(Math.sqrt(-2. * Math.log(u1)) * Math.cos(2 * Math.PI * u2) * sd + mean));
+  }
 
-			this.pSize = getSizeFn(pSize);
-			this.sSize = getSizeFn(sSize);
-			this.lSize = getSizeFn(lSize);
-			this.hSize = getSizeFn(hSize);
-			this.aSize = getSizeFn(aSize);
+  function rndUniform(min, max) {
+    return Math.round(Math.random() * (max - min)) + min;
+  }
 
-			switch (liType) {
-				case 'paragraph':
-				case 'p':
-					this.getListItemContent = function() { return this.getParagraph(); };
-					break;
-				default:
-					this.getListItemContent = function() { return this.getSentence(); };
-					break;
-			}
-		}
+  /**
+   * Latin HTML generator that is used by `<fake-latin>` to generate its content.
+   */
+  class Generator {
+    /**
+    * Create a latin generator.
+    * @param {string} pSize - Paragraph size.
+    * @param {string} sSize - Sentence size.
+    * @param {string} lSize - List size.
+    * @param {string} hSize - Heading size.
+    * @param {string} aSize - Article size.
+    * @param {string} liType - List item type.
+    */
+    constructor(pSize, sSize, lSize, hSize, aSize, liType) {
+      var size = pSize.split(',');
 
-		Generator.prototype = {
-			getParagraph: function() {
-				var sentences = [];
+      this.pSize = getSizeFn(pSize);
+      this.sSize = getSizeFn(sSize);
+      this.lSize = getSizeFn(lSize);
+      this.hSize = getSizeFn(hSize);
+      this.aSize = getSizeFn(aSize);
 
-				for (var i = 0, l = this.pSize(); i < l; i++) {
-					sentences.push(this.getSentenceText());
-				}
+      switch (liType) {
+        case 'paragraph':
+        case 'p':
+          this.getListItemContent = function() { return this.getParagraph(); };
+          break;
+        default:
+          this.getListItemContent = function() { return this.getSentence(); };
+          break;
+      }
+    }
 
-				var p = document.createElement('p');
-				p.appendChild(document.createTextNode(sentences.join(' ')));
-				return p;
-			},
+    /**
+     * Creates a `<p>` element containing random text.
+     * @return {HTMLParagraphElement} The generate paragraph element.
+     */
+    getParagraph() {
+      var sentences = [];
 
-			getList: function(ordered) {
-				var list = document.createElement(ordered ? 'ol' : 'ul');
+      for (var i = 0, l = this.pSize(); i < l; i++) {
+        sentences.push(this.getSentenceText());
+      }
 
-				for (var i = 0, l = this.lSize(); i < l; i++) {
-					var li = document.createElement('li');
-					li.appendChild(this.getListItemContent());
+      var p = document.createElement('p');
+      p.appendChild(document.createTextNode(sentences.join(' ')));
+      return p;
+    }
 
-					list.appendChild(li);
-				}
+    /**
+     * Creates a `<ul>` or `<ol>` element containing random items.
+     * @param {boolean} ordered - Whether the list should be ordered or not.
+     * @returns {(HTMLUListElement | HTMLOListElement)} The generated list element.
+     */
+    getList(ordered) {
+      var list = document.createElement(ordered ? 'ol' : 'ul');
 
-				return list;
-			},
+      for (var i = 0, l = this.lSize(); i < l; i++) {
+        var li = document.createElement('li');
+        li.appendChild(this.getListItemContent());
 
-			getWord: function() {
-				return latin[Math.floor(Math.random() * latinLength)];
-			},
+        list.appendChild(li);
+      }
 
-			getWords: function(num) {
-				var words = [];
+      return list;
+    }
 
-				for (var i = 0; i < num; i++) {
-					words.push(this.getWord());
-				}
+    /**
+     * Gets a single, random, lowercase word from the internal Latin dictionary.
+     * @returns {string} The random word.
+     */
+    getWord() {
+      return latin[Math.floor(Math.random() * latinLength)];
+    }
 
-				return words.join(' ');
-			},
+    /**
+     * Gets an exact number of words from the interal Latin dictionary, joined by spaces.
+     * @param {number} num - The number of random words to get.
+     * @return {string} The random words.
+     */
+    getWords(num) {
+      var words = [];
 
-			getSentenceText: function() {
-				var size = this.sSize(),
-					result = this.capitalise(this.getWord());
+      for (var i = 0; i < num; i++) {
+        words.push(this.getWord());
+      }
 
-				if (size > 1) {
-					var comma =  Math.random() >= 0.5;
+      return words.join(' ');
+    }
 
-					if (comma) {
-						var place = Math.floor(Math.random() * (size - 1));
+    /**
+     * Gets a random sentence of text.
+     * @returns {string} The random sentence.
+     */
+    getSentenceText() {
+      var size = this.sSize(),
+        result = this.capitalise(this.getWord());
 
-						result += (place > 0 ? ' ' : '') + this.getWords(place) + ', ' + this.getWords((size - 1) - place);
-					}
-					else {
-						result += ' ' + this.getWords(size - 1);
-					}						
-				}
+      if (size > 1) {
+        var comma =  Math.random() >= 0.5;
 
-				result += '. ';
+        if (comma) {
+          var place = Math.floor(Math.random() * (size - 1));
 
-				return result;
-			},
+          result += (place > 0 ? ' ' : '') + this.getWords(place) + ', ' + this.getWords((size - 1) - place);
+        }
+        else {
+          result += ' ' + this.getWords(size - 1);
+        }						
+      }
 
-			getSentence: function() {
-				return document.createTextNode(this.getSentenceText());
-			},
+      result += '. ';
 
-			getHeadingText: function() {
-				var words = [];
+      return result;
+    }
 
-				for (var i = 0, l = this.hSize(); i < l; i++) {
-					words.push(this.capitalise(this.getWord()));
-				}
+    /**
+     * Creates a text node containing a random sentence.
+     * @returns {Text} The generated text node.
+     */
+    getSentence() {
+      return document.createTextNode(this.getSentenceText());
+    }
 
-				return words.join(' ');
-			},
+    /**
+     * Creates a random, heading-cased group of words.
+     * @return The heading text.
+     */
+    getHeadingText() {
+      var words = [];
 
-			getHeading: function(tag) {
-				var h = document.createElement(tag);
+      for (var i = 0, l = this.hSize(); i < l; i++) {
+        words.push(this.capitalise(this.getWord()));
+      }
 
-				h.appendChild(document.createTextNode(this.getHeadingText()));
+      return words.join(' ');
+    }
 
-				return h;
-			},
+    /**
+     * Creates an `<h1>`, `<h2>`, etc. node, containing a random heading.
+     * @param tag - The type of heading node to generate: "h1", "h2", etc.
+     * @returns {HTMLElement} - The generated heading element.
+     */
+    getHeading(tag) {
+      var h = document.createElement(tag);
 
-			getArticle: function() {
-				var article = document.createElement('article');
+      h.appendChild(document.createTextNode(this.getHeadingText()));
 
-				article.appendChild(this.getHeading('h1'));
+      return h;
+    }
 
-				for (var i = 0, l = this.aSize(); i < l; i++) {
-					if (i > 0) {
-						if (i % 3 == 0) {
-							article.appendChild(this.getHeading('h2'));
-						}
-						if (i % 5 == 0)
-						{
-							article.appendChild(this.getHeading('h3'));
-						}
-					}
+    /**
+     * Creates an `<article>` element containing structured content.
+     * @returns {HTMLElement} - The generated article element.
+     */
+    getArticle() {
+      var article = document.createElement('article');
 
-					article.appendChild(this.getParagraph());
-				}
+      article.appendChild(this.getHeading('h1'));
 
-				return article;
-			},
+      for (var i = 0, l = this.aSize(); i < l; i++) {
+        if (i > 0) {
+          if (i % 3 == 0) {
+            article.appendChild(this.getHeading('h2'));
+          }
+          if (i % 5 == 0)
+          {
+            article.appendChild(this.getHeading('h3'));
+          }
+        }
 
-			capitalise: function(word) {
-				return word.charAt(0).toUpperCase() + word.substring(1);
-			},
-		};
+        article.appendChild(this.getParagraph());
+      }
 
-		function changeHandler() {
-			this.regenerate();
-		}
+      return article;
+    }
 
-		Polymer('fake-latin', {
-			type : 'sentence',
-			paragraphSize: 'n8,3',
-			sentenceSize: 'n12,4',
-			listSize: 'n8,2',
-			headingSize: 'n6,2',
-			articleSize: 'n6,2',
-			listItemType: 'sentence',
-			unshadowed: false,
-			repeat: 1,
+    /**
+     * Capitalises the first letter of a word.
+     * @param {string} - The word to capitalise.
+     * @returns {string} The capitalised word.
+     */
+    capitalise(word) {
+      return word.charAt(0).toUpperCase() + word.substring(1);
+    }
+  }
 
-			typeChanged: changeHandler,
-			paragraphSizeChanged: changeHandler,
-			sentenceSizeChanged: changeHandler,
-			listSizeChanged: changeHandler,
-			headingSizeChanged: changeHandler,
-			articleSizeChanged: changeHandler,
-			listItemTypeChanged: changeHandler,
-			repeatChanged: changeHandler,
+  /**
+   * # Fake Latin
+   * `<fake-latin>` generates random placeholder text of different shapes and sizes.
+   * ## Usage
+   * To get some generated text, drop a `<fake-latin>` element into your HTML wherever you want it.
+   *
+   * ```html
+   * <fake-latin></fake-latin>
+   * ```
+   * ### Size Microsyntax
+   *
+   * Some properties, such as `paragraphSize` and `listSize` can be used to control the size of the 
+   * randomly generated content. These properties expect input in the following form: `[n]{min}[,max]`.
+   *
+   * Each generated item will have a size between `min` and `max` (inclusive). E.g. Given the following:
+   *
+   * ```html
+   * <fake-latin type="p" paragraph-size="5,10"></fake-latin>
+   * ```
+   * 
+   * The generated paragraph would have between 5 and 10 words. If `max` is omitted, the generated size will be exactly `min`.
+   *
+   * By default, the generated sizes are uniformly distributed between `min` and `max`. If the range is preceded by `n`, then
+   * the generated sizes will be normally distributed between `min` and `max`
+   * 
+   * @customElement
+   * @polymer
+   * @demo demo/index.html
+   *
+   */
+  class FakeLatinComponent extends Polymer.Element {
+    constructor() {
+      super();
+      this.regenerate = this.regenerate.bind(this);
+    }
 
-			ready: function() {
-				this.regenerate();
-			},
-			regenerate: function() {
-				// Debounce the regeneration, so we don't waste effort when multiple attributes change.
-				if (this.timeout) {
-					window.clearTimeout(this.timeout);
-				}
+    static get properties() {
+      return {
+        /**
+         * The type of text or HTML content to generate.
+         *
+         *  - sentence
+         *  - p / paragraph
+         *  - list / unordered list / ul
+         *  - ordered list / ol
+         *  - heading / h1
+         *  - h2
+         *  - h3
+         *  - h4
+         *  - article
+         */
+        type: {
+          type: String,
+          value: 'sentence'
+        },
+        /**
+         * The size of paragraph to generate, in sentences.
+         */
+        paragraphSize: {
+          type: String,
+          value: 'n8,3'
+        }, 
+        /**
+         * The size of sentence to generate, in words.
+         */
+        sentenceSize: {
+          type: String,
+          value: 'n12,4'
+        },
+        /**
+         * The size of list to generate, in items.
+         * The size of each item can be controlled by the appropriate attribute, depending on the `listItemType`.
+         */
+        listSize: {
+          type: String,
+          value: 'n8,2'
+        },
+        /**
+         * The size of heading to generate, in words.
+         */
+        headingSize: {
+          type: String,
+          value: 'n6,2'
+        },
+        /**
+         * The size of article to generate, in heading and paragraph sections.
+         */
+        articleSize: {
+          type: String,
+          value: 'n6,2'
+        },
+        /**
+         * The type of item to create within a list.
+         *
+         *  - sentence
+         *  - p / paragraph
+         */
+        listItemType: {
+          type: String,
+          value: 'sentence'
+        },
+        /**
+         * Whether the generated content is placed within a shadow root, or directly within the DOM of the document.
+         */
+        unshadowed: {
+          type: Boolean,
+          value: false
+        },
+        /**
+         * The number of copies of the root type to generate.
+         */
+        repeat: {
+          type: String,
+          value: '1'
+        }
+      };
+    }
 
-				var self = this;
+    connectedCallback() {
+      super.connectedCallback();
+      this.connected = true;
 
-				this.timeout = window.setTimeout(function() {
-					self.timeout = null;
+      if (!this.unshadowed) {
+        this.root = this.attachShadow({ mode: 'open'});
+        this.root.applyAuthorStyles = true;
+      }
+      else {
+        this.root = this;
+      }
+      
+      this.regenerate();
+    }
 
-					if (!self.unshadowed) {
-						var root = self.webkitCreateShadowRoot();
-						root.applyAuthorStyles = true;
-					}
-					else {
-						root = self;
-						root.innerHTML = '';
-					}
+    attributeChangedCallback(name, old, value) {
+      super.attributeChangedCallback(name, old, value);
 
-					var generator = self.getGenerator();
+      if (this.connected) {
+        // Debounce the regeneration, so we don't waste effort when multiple attributes change.
+        if (this.timeout) {
+          window.clearTimeout(this.timeout);
+        }
 
-					var repeat = getSizeFn(self.repeat)();
+        var self = this;
+        this.timeout = window.setTimeout(function() {
+          self.timeout = null;
+          self.regenerate();
+        }, 50);
+      }
+    }
 
-					for (var i = 0; i < repeat; i++) {
-						var myType = self.type.toLowerCase();
-						switch(myType) {
-							case 'p':
-							case 'paragraph':
-								root.appendChild(generator.getParagraph());
-								break;
-							case 'list':
-							case 'unordered list':
-							case 'ul':
-								root.appendChild(generator.getList(false));
-								break;
-							case 'ordered list':
-							case 'ol':
-								root.appendChild(generator.getList(true));
-								break;
-							case 'heading':
-							case 'h1':
-								root.appendChild(generator.getHeading('h1'));
-								break;
-							case 'h2':
-							case 'h3':
-							case 'h4':
-								root.appendChild(generator.getHeading(myType));
-								break;
-							case 'article':
-								root.appendChild(generator.getArticle());
-								break;
-							default:
-								root.appendChild(generator.getSentence());
-						}
-					}
-				}, 50);
-			},
-			getGenerator: function() {
-				return new Generator(
-					this.paragraphSize,
-					this.sentenceSize,
-					this.listSize,
-					this.headingSize,
-					this.articleSize,
-					this.listItemType
-				); 
-			}
-		});
+    /**
+     * Regenerates the content of the component.
+     */
+    regenerate() {
+      this.root.innerHTML = '';
+      var generator = this.getGenerator();
 
-		var latin = ['ab', 'aberant', 'abscidit', 'acervo', 'ad', 'addidit', 'adhuc', 'adsiduis', 'adspirate', 'aequalis', 'aer', 'aera', 'aere', 'aeris', 'aestu', 'aetas', 'aethera', 'aethere', 'agitabilis', 'aliis', 'aliud', 'alta', 'altae', 'alto', 'ambitae', 'amphitrite', 'animal', 'animalia', 'animalibus', 'animus', 'ante', 'aquae', 'arce', 'ardentior', 'astra', 'aurea', 'auroram', 'austro', 'bene', 'boreas', 'bracchia', 'caeca', 'caecoque', 'caeleste', 'caeli', 'caelo', 'caelum', 'caelumque', 'caesa', 'calidis', 'caligine', 'campoque', 'campos', 'capacius', 'carentem', 'carmen', 'cepit', 'certis', 'cesserunt', 'cetera', 'chaos', 'cingebant', 'cinxit', 'circumdare', 'circumfluus', 'circumfuso', 'coegit', 'coeperunt', 'coeptis', 'coercuit', 'cognati', 'colebat', 'concordi', 'congeriem', 'congestaque', 'consistere', 'contraria', 'conversa', 'convexi', 'cornua', 'corpora', 'corpore', 'crescendo', 'cum', 'cuncta', 'cura', 'declivia', 'dedit', 'deducite', 'deerat', 'dei', 'densior', 'deorum', 'derecti', 'descenderat', 'deus', 'dextra', 'di', 'dicere', 'diffundi', 'diremit', 'discordia', 'dispositam', 'dissaepserat', 'dissociata', 'distinxit', 'diu', 'diversa', 'diverso', 'divino', 'dixere', 'dominari', 'duae', 'duas', 'duris', 'effervescere', 'effigiem', 'egens', 'elementaque', 'emicuit', 'ensis', 'eodem', 'erant', 'erat', 'erat', 'erectos', 'est', 'et', 'eurus', 'evolvit', 'exemit', 'extendi', 'fabricator', 'facientes', 'faecis', 'fecit', 'feras', 'fert', 'fidem', 'figuras', 'finxit', 'fixo', 'flamina', 'flamma', 'flexi', 'fluminaque', 'fontes', 'foret', 'forma', 'formaeque', 'formas', 'fossae', 'fratrum', 'freta', 'frigida', 'frigore', 'fronde', 'fuerant', 'fuerat', 'fuit', 'fulgura', 'fulminibus', 'galeae', 'gentes', 'glomeravit', 'grandia', 'gravitate', 'habendum', 'habentem', 'habentia', 'habitabilis', 'habitandae', 'haec', 'hanc', 'his', 'homini', 'hominum', 'homo', 'horrifer', 'humanas', 'hunc', 'iapeto', 'ignea', 'igni', 'ignotas', 'illas', 'ille', 'illi', 'illic', 'illis', 'imagine', 'in', 'inclusum', 'indigestaque', 'induit', 'iners', 'inmensa', 'inminet', 'innabilis', 'inposuit', 'instabilis', 'inter', 'invasit', 'ipsa', 'ita', 'iudicis', 'iuga', 'iunctarum', 'iussit', 'lacusque', 'lanient', 'lapidosos', 'lege', 'legebantur', 'levitate', 'levius', 'liberioris', 'librata', 'ligavit', 'limitibus', 'liquidas', 'liquidum', 'litem', 'litora', 'locavit', 'locis', 'locoque', 'locum', 'longo', 'lucis', 'lumina', 'madescit', 'magni', 'manebat', 'mare', 'margine', 'matutinis', 'mea', 'media', 'meis', 'melior', 'melioris', 'membra', 'mentes', 'mentisque', 'metusque', 'militis', 'minantia', 'mixta', 'mixtam', 'moderantum', 'modo', 'moles', 'mollia', 'montes', 'montibus', 'mortales', 'motura', 'mundi', 'mundo', 'mundum', 'mutastis', 'mutatas', 'nabataeaque', 'nam', 'natura', 'naturae', 'natus', 'ne', 'nebulas', 'nec', 'neu', 'nisi', 'nitidis', 'nix', 'non', 'nondum', 'norant', 'nova', 'nubes', 'nubibus', 'nullaque', 'nulli', 'nullo', 'nullus', 'numero', 'nunc', 'nuper', 'obliquis', 'obsistitur', 'obstabatque', 'occiduo', 'omni', 'omnia', 'onerosior', 'onus', 'opifex', 'oppida', 'ora', 'orba', 'orbe', 'orbem', 'orbis', 'origine', 'origo', 'os', 'otia', 'pace', 'parte', 'partim', 'passim', 'pendebat', 'peragebant', 'peregrinum', 'permisit', 'perpetuum', 'persidaque', 'perveniunt', 'phoebe', 'pinus', 'piscibus', 'plagae', 'pluvialibus', 'pluviaque', 'poena', 'pondere', 'ponderibus', 'pondus', 'pontus', 'porrexerat', 'possedit', 'posset', 'postquam', 'praebebat', 'praecipites', 'praeter', 'premuntur', 'pressa', 'prima', 'primaque', 'principio', 'pro', 'pronaque', 'proxima', 'proximus', 'pugnabant', 'pulsant', 'quae', 'quam', 'quanto', 'quarum', 'quem', 'qui', 'quia', 'quicquam', 'quin', 'quinta', 'quisque', 'quisquis', 'quod', 'quoque', 'radiis', 'rapidisque', 'recens', 'recepta', 'recessit', 'rectumque', 'regat', 'regio', 'regna', 'reparabat', 'rerum', 'retinebat', 'ripis', 'rudis', 'sanctius', 'sata', 'satus', 'scythiam', 'secant', 'secrevit', 'sectamque', 'secuit', 'securae', 'sed', 'seductaque', 'semina', 'semine', 'septemque', 'sibi', 'sic', 'siccis', 'sidera', 'silvas', 'sine', 'sinistra', 'sive', 'sole', 'solidumque', 'solum', 'sorbentur', 'speciem', 'spectent', 'spisso', 'sponte', 'stagna', 'sua', 'subdita', 'sublime', 'subsidere', 'sui', 'suis', 'summaque', 'sunt', 'super', 'supplex', 'surgere', 'tanta', 'tanto', 'tegi', 'tegit', 'tellure', 'tellus', 'temperiemque', 'tempora', 'tenent', 'tepescunt', 'terra', 'terrae', 'terram', 'terrarum', 'terras', 'terrenae', 'terris', 'timebat', 'titan', 'tollere', 'tonitrua', 'totidem', 'totidemque', 'toto', 'tractu', 'traxit', 'triones', 'tuba', 'tum', 'tumescere', 'turba', 'tuti', 'ubi', 'ulla', 'ultima', 'umentia', 'umor', 'unda', 'undae', 'undas', 'undis', 'uno', 'unus', 'usu', 'ut', 'utque', 'utramque', 'valles', 'ventis', 'ventos', 'verba', 'vesper', 'videre', 'vindice', 'vis', 'viseret', 'vix', 'volucres', 'vos', 'vultus', 'zephyro', 'zonae'];
+      var repeat = getSizeFn(this.repeat)();
 
-		var latinLength = latin.length;
-	</script>
-</polymer-element>
+      for (var i = 0; i < repeat; i++) {
+        var myType = this.type.toLowerCase();
+        switch(myType) {
+          case 'p':
+          case 'paragraph':
+            this.root.appendChild(generator.getParagraph());
+            break;
+          case 'list':
+          case 'unordered list':
+          case 'ul':
+            this.root.appendChild(generator.getList(false));
+            break;
+          case 'ordered list':
+          case 'ol':
+            this.root.appendChild(generator.getList(true));
+            break;
+          case 'heading':
+          case 'h1':
+            this.root.appendChild(generator.getHeading('h1'));
+            break;
+          case 'h2':
+          case 'h3':
+          case 'h4':
+            this.root.appendChild(generator.getHeading(myType));
+            break;
+          case 'article':
+            this.root.appendChild(generator.getArticle());
+            break;
+          default:
+            this.root.appendChild(generator.getSentence());
+        }
+      }
+    }
+
+    /**
+     * Creates and returns a {Generator} based on the component's configuration. This is not the actual
+     * generator instance used by the component, and changes to the component's attributes and properties
+     * made after a call to `getGenerator()` will not be reflected in the results of generator returned.
+     *
+     * @return {Generator} The generator instance.
+     */
+    getGenerator() {
+      return new Generator(
+        this.paragraphSize,
+        this.sentenceSize,
+        this.listSize,
+        this.headingSize,
+        this.articleSize,
+        this.listItemType
+      ); 
+    }
+  }
+
+  customElements.define('fake-latin', FakeLatinComponent);
+</script>

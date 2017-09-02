@@ -1,0 +1,162 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <script src="/bower_components/webcomponentsjs/webcomponents-loader.js"></script>
+  <link rel="import" href="fake-latin.html">
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 3rem auto;
+      max-width: 60rem;
+      font-size: 16px;
+      line-height: 1.5em;
+    }
+
+    h1.test {
+      background-color: #BFFF7F;
+      padding: 0.5em;
+    }
+
+    .regen {
+      font-size: 24px;
+      margin: auto;
+    }
+  </style>
+</head>
+<body>
+  <p>
+    <button class="regen" onclick="regenAll()">Regenerate All</button>
+  </p>
+
+  <h1 class="test">Single Sentence</h1>
+
+  <p>
+    <code>&lt;fake-latin&gt;&lt;/fake-latin&gt;</code>
+  </p>
+
+  <fake-latin></fake-latin>
+
+
+  <h1 class="test">Three Sentences</h1>
+  
+  <p>
+    <code>&lt;fake-latin repeat="3"&gt;&lt;/fake-latin&gt;</code>
+  </p>
+  
+
+  <fake-latin repeat="3"></fake-latin>
+
+
+  <h1 class="test">Single Paragraph</h1>
+
+  <p>
+    <code>&lt;fake-latin type="p"&gt;&lt;/fake-latin&gt;</code>
+  </p>
+
+  <fake-latin type="p"></fake-latin>
+
+
+  <h1 class="test">Unshadowed Paragraph</h1>
+
+  <p>
+    <code>&lt;fake-latin type="p" unshadowed&gt;&lt;/fake-latin&gt;</code>
+  </p>
+
+  <fake-latin type="p" unshadowed></fake-latin>
+
+
+  <h1 class="test">Three Paragraphs</h1>
+
+  <p>
+    <code>&lt;fake-latin type="p" repeat="3"&gt;&lt;/fake-latin&gt;</code>
+  </p>
+
+  <fake-latin type="p" repeat="3"></fake-latin>
+
+
+  <h1 class="test">Unordered List</h1>
+
+  <p>
+    <code>&lt;fake-latin type="ul"&gt;&lt;/fake-latin&gt;</code>
+  </p>
+
+  <fake-latin type="ul"></fake-latin>
+
+
+  <h1 class="test">Ordered List</h1>
+
+  <p>
+    <code>&lt;fake-latin type="ol"&gt;&lt;/fake-latin&gt;</code>
+  </p>
+
+  <fake-latin type="ol"></fake-latin>
+
+
+  <h1 class="test">Paragraph List</h1>
+
+  <p>
+    <code>&lt;fake-latin type="list" list-item-type="p"&gt;&lt;/fake-latin&gt;</code>
+  </p>
+
+  <fake-latin type="list" list-item-type="p"></fake-latin>
+
+
+  <h1 class="test">Heading</h1>
+
+  <p>
+    <code>&lt;fake-latin type="heading"&gt;&lt;/fake-latin&gt;</code>
+  </p>
+
+  <fake-latin type="heading"></fake-latin>
+
+
+  <h1 class="test">Article</h1>
+
+  <p>
+    <code>&lt;fake-latin type="article"&gt;&lt;/fake-latin&gt;</code>
+  </p>
+
+  <fake-latin type="article"></fake-latin>
+
+
+  <h1 class="test">API</h1>
+
+  <p>
+    <code>
+<pre>
+&lt;div id="api"&gt;&lt;/div&gt;
+
+&lt;script&gt;
+  window.addEventListener('WebComponentsReady', function () {
+    var fl = document.createElement('fake-latin'),
+      api = document.getElementById('api'),
+      g = fl.getGenerator();
+
+    api.appendChild(g.getParagraph());
+  });
+&lt;/script&gt;
+</pre>
+    </code>
+  </p>
+
+  <div id="api"></div>
+
+  <script>
+    function regenAll() {
+      document.querySelectorAll('fake-latin').forEach(function(element) {
+        element.regenerate();
+      });
+    }
+
+    window.addEventListener('WebComponentsReady', function () {
+      var fl = document.createElement('fake-latin'),
+        api = document.getElementById('api'),
+        g = fl.getGenerator();
+
+      api.appendChild(g.getParagraph());
+    });
+  </script>
+</body>
+</html>

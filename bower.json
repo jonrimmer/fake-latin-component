@@ -1,8 +1,30 @@
 {
   "name": "fake-latin-component",
-  "version": "1.0.0",
+  "homepage": "https://github.com/jonrimmer/fake-latin-component",
+  "authors": [
+    "Jon Rimmer <jon.rimmer@gmail.com>"
+  ],
+  "description": "A Polymer web component for generating random pseudo-latin text",
+  "main": "fake-latin.html",
+  "keywords": [
+    "polymer",
+    "web component"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests",
+    "index.html",
+    "demo.html",
+    "analysis.json"
+  ],
   "dependencies": {
-    "platform": "Polymer/platform#~0.1.1",
-    "polymer": "Polymer/polymer#~0.1.1"
+    "polymer": "Polymer/polymer#^2.0.2"
+  },
+  "devDependencies": {
+    "iron-component-page": "^3.0.1"
   }
 }
